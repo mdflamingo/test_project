@@ -6,11 +6,12 @@ class User(AbstractUser):
     """Модель пользователя."""
 
     phone = models.CharField(max_length=12, unique=True)
-    confirmation_code = models.CharField("Код подтверждения", blank=True, max_length=150)
+    username = models.CharField('Username', max_length=150, unique=True)
+    confirmation_code = models.CharField("Confirmation Code", blank=True, max_length=150)
     invite_code = models.CharField(max_length=6, unique=True)
 
     USERNAME_FIELD = 'phone'
-    REQUIRED_FIELDS = []
+    REQUIRED_FIELDS = ['username']
 
     class Meta:
         constraints = [
