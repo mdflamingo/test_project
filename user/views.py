@@ -23,7 +23,7 @@ def registration(request):
 def profile(request):
     user = request.user
     if not user.is_authenticated:
-        return redirect('/')
+        return redirect('user:signup')
     invite_code = user.invite_code
     invited_users = User.objects.filter(invite_code=invite_code)
     context = {
