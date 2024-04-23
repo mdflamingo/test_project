@@ -1,22 +1,22 @@
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
-from .forms import CreationForm
+from .forms import CustomUserCreationForm
 from .models import User
 
 
 def registration(request):
     if request.method == 'POST':
-        form = CreationForm(request.POST)
+        form = CustomUserCreationForm(request.POST)
         if form.is_valid():
             user = form.save()
             User.objects.create(phone_number=form.cleaned_data.get('phone_number'))
-            user = authenticate(phone_number=user.phone_number, username=user.username)
+            user = authenticate(phone_number=user.phone_number)
             user.save()
             login(request, user)
             return redirect('user:profile', request.user.phone_number)
     else:
-        form = CreationForm()
+        form = CustomUserCreationForm()
     return render(request, 'user/signup.html', {'form': form})
 
 

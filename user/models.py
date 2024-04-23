@@ -1,24 +1,20 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-
+from .manager import UserManager
 
 class User(AbstractUser):
     """Модель пользователя."""
 
-    phone_number = models.CharField(max_length=12)
-    username = models.CharField('Username', max_length=150, unique=True)
-    # confirmation_code = models.CharField('Confirmation Code', blank=True, max_length=150)
-    invite_code = models.CharField(max_length=6, blank=True)
-    # is_verifide = models.BooleanField('Verified', default=False)
+    phone_number = models.CharField(max_length=12, unique=True)
 
-    # USERNAME_FIELD = 'phone_number'
-    # REQUIRED_FIELDS = ['username']
-
-    # class Meta:
-    #     constraints = [
-    #         models.UniqueConstraint(fields=['phone_number', 'invite_code'],
-    #                                 name='phone_invite_code')]
+    USERNAME_FIELD = 'phone_number'
+    REQUIRED_FIELDS = []
+    objects = UserManager()
 
     def send_sms(self, message, **kwargs):
-        print(f'Sending SMS message to {self.phone_number}: {message}')
-
+        if User.objects.filter(phone_number=self.phone_number).exists():
+            # If the phone_number already exists, send the SMS
+            print(f'Sending SMS message to {self.phone_number}: {message}')
+        else:
+            # If the phone_number does not exist, raise an error
+            raise ValueError('The phone number does not exist in the system.')
